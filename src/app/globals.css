@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reset đẹp hơn */
+html, body {
+  padding: 0;
+  margin: 0;
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-white text-neutral-900 antialiased;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Form chuyên nghiệp hơn */
+input, textarea, select {
+  @apply outline-none;
+}
+
+/* Scrollbar gọn gàng */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a3a3a3;
+}
+.label {
+  @apply text-xs tracking-[0.2em] uppercase text-neutral-500 mb-3;
+}
+
+.input {
+  @apply border-b border-neutral-300 py-3 px-1 text-lg bg-transparent
+         focus:outline-none focus:border-black transition-all duration-300;
+}
+
+/* Hiệu ứng focus sang trọng */
+.input:focus {
+  @apply border-black;
+}
+
+/* textarea đẹp hơn */
+textarea.input {
+  @apply leading-relaxed;
+}
