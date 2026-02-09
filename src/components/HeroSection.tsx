@@ -1,132 +1,117 @@
 'use client';
 
-import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  AnimatePresence,
+} from 'framer-motion';
+import { useRef, useEffect, useState } from 'react';
 
-const heroImage =
-  'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&q=80';
+const images = [
+  '/images/news1.jpg',
+  '/images/news2.jpg',
+  '/images/news3.jpg',
+  '/images/news4.jpg',
+  '/images/news5.jpg',
+  '/images/news6.jpg',
+];
+
+const burns = [
+  { scale: 1.25, x: '-4%', y: '-3%' },
+  { scale: 1.2, x: '5%', y: '-2%' },
+  { scale: 1.22, x: '-6%', y: '3%' },
+  { scale: 1.18, x: '4%', y: '4%' },
+  { scale: 1.24, x: '-5%', y: '2%' },
+  { scale: 1.2, x: '6%', y: '-4%' },
+];
+
+const DURATION = 10000;
 
 export default function HeroSection() {
   const ref = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused) return;
+    const i = setInterval(
+      () => setIndex((p) => (p + 1) % images.length),
+      DURATION
+    );
+    return () => clearInterval(i);
+  }, [paused]);
 
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end start'],
   });
 
-  // Parallax transforms
-  const yText = useTransform(scrollYProgress, [0, 1], ['0%', '40%']);
-  const yOverlay = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
-  const scaleImage = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
+  const yText = useTransform(scrollYProgress, [0, 1], ['0%', '35%']);
 
   return (
     <section
       ref={ref}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      className="relative h-screen w-full"
     >
-      {/* Background Image cinematic zoom */}
-      <motion.div style={{ scale: scaleImage }} className="absolute inset-0">
-        <Image
-          src={heroImage}
-          alt="Luxury property"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-      </motion.div>
+      {/* Background */}
+      <div className="absolute inset-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={index}
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: 1,
+              scale: burns[index].scale,
+              x: burns[index].x,
+              y: burns[index].y,
+            }}
+            exit={{ opacity: 0 }}
+            transition={{
+              opacity: { duration: 1.2 },
+              scale: { duration: DURATION / 1000, ease: 'linear' },
+              x: { duration: DURATION / 1000, ease: 'linear' },
+              y: { duration: DURATION / 1000, ease: 'linear' },
+            }}
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${images[index]})` }}
+          />
+        </AnimatePresence>
 
-      {/* Overlay trôi nhẹ */}
-      <motion.div
-        style={{ y: yOverlay }}
-        className="absolute inset-0 bg-black/40"
-      />
+        <div className="absolute inset-0 bg-black/45" />
+      </div>
 
-      {/* Content parallax */}
+      {/* Content */}
       <motion.div
         style={{ y: yText }}
-        className="relative z-10 text-center text-white px-6 max-w-4xl mx-auto"
+        className="relative z-10 h-full flex flex-col items-center justify-center text-white text-center px-6"
       >
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-sm font-medium tracking-[0.25em] uppercase mb-6"
-        >
+        <p className="text-sm tracking-[0.25em] uppercase mb-6">
           Bất Động Sản Biển Cao Cấp
-        </motion.p>
+        </p>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.7,
-            delay: 0.35,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl tracking-tight leading-[1.05]"
-        >
-          Kiệt tác
-          <br />
-          Bên bờ biển
-        </motion.h1>
+        <h1 className="font-serif text-6xl md:text-8xl leading-[1.05]">
+          Kiệt tác <br /> Bên bờ biển
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.7 }}
-          className="mt-8 text-lg md:text-xl text-white/90 max-w-xl mx-auto"
-        >
+        <p className="mt-8 text-lg text-white/90 max-w-xl">
           Khám phá những tuyệt tác ven biển tại các vị trí đắt giá nhất.
-        </motion.p>
+        </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.9 }}
-          className="mt-14 md:mt-20"
-        >
-          <div className="inline-flex flex-wrap items-center gap-3 justify-center bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-6 py-4 md:px-8 md:py-5">
-            <input
-              type="text"
-              placeholder="Location"
-              readOnly
-              className="bg-transparent text-white placeholder-white/70 text-sm md:text-base w-28 md:w-36 outline-none"
-            />
-            <span className="text-white/50">|</span>
-            <input
-              type="text"
-              placeholder="Property type"
-              readOnly
-              className="bg-transparent text-white placeholder-white/70 text-sm md:text-base w-28 md:w-36 outline-none"
-            />
-            <span className="text-white/50 hidden sm:inline">|</span>
+        {/* DOT dưới text */}
+        <div className="mt-12 flex gap-3">
+          {images.map((_, i) => (
             <button
-              type="button"
-              className="ml-2 px-5 py-2.5 bg-white text-neutral-900 text-sm font-medium rounded-full hover:bg-white/90 transition-colors"
-            >
-              Explore
-            </button>
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {/* Scroll indicator breathing */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2"
-      >
-        <motion.span
-          animate={{ height: [16, 28, 16] }}
-          transition={{ repeat: Infinity, duration: 1.8 }}
-          className="block w-px bg-white/60 mx-auto rounded-full"
-        />
-        <span className="text-xs tracking-widest uppercase text-white/70 mt-2 block">
-          Scroll
-        </span>
+              key={i}
+              onClick={() => setIndex(i)}
+              className={`h-2 w-2 rounded-full transition-all ${
+                i === index ? 'bg-white scale-125' : 'bg-white/40'
+              }`}
+            />
+          ))}
+        </div>
       </motion.div>
     </section>
   );

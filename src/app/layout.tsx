@@ -3,6 +3,7 @@ import { Playfair_Display, Inter } from 'next/font/google';
 import './globals.css';
 import ResponsiveNavbar from '@/components/ResponsiveNavbar';
 import Footer from '@/components/Footer';
+import FloatingZalo from '@/components/FloatingZalo';
 
 const playfair = Playfair_Display({
   variable: '--font-playfair',
@@ -32,6 +33,7 @@ export default function RootLayout({
       <ResponsiveNavbar />
         <main className="flex-1">{children}</main>
         <Footer />
+        <FloatingZalo />
       </body>
     </html>
   );

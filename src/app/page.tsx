@@ -14,14 +14,23 @@ export default function HomePage() {
   return (
     <>
       <HeroSection />
-
       {/* Featured Projects */}
       <section className="py-24 md:py-32 px-6 md:px-10 max-w-[1600px] mx-auto">
-        <SectionTitle
-          overline="Dự án nổi bật"
-          title="Tuyển Chọn Các Khu Đô Thị & Nghỉ Dưỡng Ven Biển"
-          className="mb-20"
-        />
+      <motion.div
+  initial={{ opacity: 0, y: 60, filter: 'blur(8px)' }}
+  whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+  viewport={{ once: true, amount: 0.6 }}
+  transition={{
+    duration: 1.1,
+    ease: [0.22, 1, 0.36, 1],
+  }}
+>
+  <SectionTitle
+    overline="Dự án nổi bật"
+    title="Tuyển Chọn Các Khu Đô Thị & Nghỉ Dưỡng Ven Biển"
+    className="mb-20"
+  />
+</motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16 lg:gap-20">
         {projects.map((project) => (

@@ -1,22 +1,23 @@
-import { createClient } from '@/lib/supabase/server';
+import { NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabase/admin';
 
 export async function POST(req: Request) {
-  const { name, phone, need, budget, message } = await req.json();
+  const body = await req.json();
 
-  const supabase = await createClient();
-
-  const { error } = await supabase.from('contacts').insert({
-    name,
-    phone,
-    need,
-    budget,
-    message,
-  });
+  const { error } = await supabaseAdmin.from('contacts').insert([
+    {
+      name: body.name,
+      phone: body.phone,
+      product: body.product,
+      type: body.type,
+      message: body.message,
+    },
+  ]);
 
   if (error) {
     console.error(error);
-    return Response.json({ success: false });
+    return NextResponse.json({ success: false, error });
   }
 
-  return Response.json({ success: true });
+  return NextResponse.json({ success: true });
 }

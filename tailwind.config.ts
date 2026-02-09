@@ -26,6 +26,15 @@ const config: Config = {
       transitionDuration: {
         '400': '400ms',
       },
+      animation: {
+        'bounce-slow': 'bounceSlow 2.5s infinite',
+      },
+      keyframes: {
+        bounceSlow: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-6px)' },
+        },
+      },
     },
   },
   plugins: [],
